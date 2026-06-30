@@ -220,7 +220,7 @@ The frontend is deployed on **Vercel**.
 
 **Live Website**
 
-> Coming Soon
+> https://ai-resume-screening-frontend-ten.vercel.app/
 
 *(Update this section after deploying to Vercel.)*
 
