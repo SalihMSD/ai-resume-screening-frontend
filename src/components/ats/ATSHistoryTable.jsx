@@ -3,282 +3,320 @@ import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 
 import {
-    Chip,
-    Button,
-    Stack,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    DialogActions,
-    Typography,
-    Box,
+  Box,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Stack,
+  Typography,
 } from "@mui/material";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function ATSHistoryTable({
-    rows,
-    onDelete,
+  rows,
+  onDelete,
 }) {
 
-    const [open, setOpen] = useState(false);
-    const [selectedId, setSelectedId] = useState(null);
+  const [open, setOpen] = useState(false);
 
-    const columns = [
+  const [selectedId, setSelectedId] = useState(null);
 
-        {
-            field: "candidateName",
-            headerName: "Candidate",
-            flex: 1.5,
-        },
+  function handleOpen(id) {
 
-        {
-            field: "jobTitle",
-            headerName: "Job",
-            flex: 1.5,
-        },
+    setSelectedId(id);
 
-        {
-            field: "matchPercentage",
-            headerName: "ATS Score",
-            flex: 0.9,
+    setOpen(true);
 
-            renderCell: (params) => (
+  }
 
-                <Typography
-                    fontWeight="bold"
-                    color={
-                        params.value >= 75
-                            ? "success.main"
-                            : params.value >= 50
-                                ? "warning.main"
-                                : "error.main"
-                    }
-                >
-                    {params.value}%
-                </Typography>
+  function handleDelete() {
 
-            ),
-        },
+    onDelete(selectedId);
 
-        {
-            field: "status",
-            headerName: "Status",
-            flex: 1.5,
+    setOpen(false);
 
-            renderCell: (params) => {
+  }
 
-                let color = "default";
+  const columns = [
 
-                switch (params.value) {
+    {
+      field: "candidateName",
+      headerName: "Candidate",
+      flex: 1.5,
+      minWidth: 180,
+    },
 
-                    case "Excellent Match":
-                        color = "success";
-                        break;
+    {
+      field: "jobTitle",
+      headerName: "Job",
+      flex: 1.5,
+      minWidth: 180,
+    },
 
-                    case "Highly Recommended":
-                        color = "primary";
-                        break;
+    {
+      field: "matchPercentage",
+      headerName: "ATS Score",
+      flex: 1,
 
-                    case "Recommended":
-                        color = "info";
-                        break;
+      renderCell: (params) => (
 
-                    case "Partially Suitable":
-                        color = "warning";
-                        break;
+        <Typography
+          fontWeight="bold"
+          color={
+            params.value >= 75
+              ? "success.main"
+              : params.value >= 50
+              ? "warning.main"
+              : "error.main"
+          }
+        >
+          {params.value}%
+        </Typography>
 
-                    default:
-                        color = "error";
+      ),
 
-                }
+    },
 
-                return (
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 1.4,
 
-                    <Chip
-                        label={params.value}
-                        color={color}
-                        size="small"
-                    />
+      renderCell: (params) => {
 
-                );
+        let color = "default";
 
-            },
+        switch (params.value) {
 
-        },
+          case "Excellent Match":
+            color = "success";
+            break;
 
-        {
-            field: "createdAt",
-            headerName: "Created",
-            flex: 1.6,
+          case "Highly Recommended":
+            color = "primary";
+            break;
 
-            renderCell: (params) => {
+          case "Recommended":
+            color = "info";
+            break;
 
-                if (!params.value) return "";
+          case "Partially Suitable":
+            color = "warning";
+            break;
 
-                return new Date(params.value).toLocaleString();
+          default:
+            color = "error";
 
-            },
-
-        },
-
-        {
-            field: "actions",
-            headerName: "Actions",
-            flex: 1,
-
-            sortable: false,
-
-            renderCell: (params) => (
-
-                <Button
-                    color="error"
-                    variant="contained"
-                    size="small"
-                    startIcon={<DeleteIcon />}
-                    onClick={() => {
-
-                        setSelectedId(params.row.id);
-
-                        setOpen(true);
-
-                    }}
-                >
-                    Delete
-                </Button>
-
-            ),
-
-        },
-
-    ];
-
-    if (rows.length === 0) {
+        }
 
         return (
 
-            <Box
-                sx={{
-                    py: 8,
-                    textAlign: "center",
-                }}
-            >
-
-                <Typography
-                    variant="h6"
-                    color="text.secondary"
-                >
-                    No ATS Reports Found
-                </Typography>
-
-            </Box>
+          <Chip
+            label={params.value}
+            color={color}
+            size="small"
+            sx={{
+              fontWeight: 600,
+            }}
+          />
 
         );
 
-    }
+      },
+
+    },
+
+    {
+      field: "createdAt",
+      headerName: "Created On",
+      flex: 1.4,
+
+      renderCell: (params) =>
+
+        params.value
+          ? new Date(params.value).toLocaleString()
+          : "",
+
+    },
+
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+
+      sortable: false,
+
+      renderCell: (params) => (
+
+        <Button
+          color="error"
+          variant="contained"
+          size="small"
+          startIcon={<DeleteIcon />}
+          onClick={() => handleOpen(params.row.id)}
+          sx={{
+            borderRadius: 2,
+          }}
+        >
+          Delete
+        </Button>
+
+      ),
+
+    },
+
+  ];
+    if (rows.length === 0) {
 
     return (
 
-        <>
+      <Box
+        sx={{
+          py: 10,
+          textAlign: "center",
+        }}
+      >
 
-            <Box
-                sx={{
-                    height: 500,
-                    width: "100%",
-                }}
-            >
+        <Typography
+          variant="h6"
+          color="text.secondary"
+        >
+          No ATS Reports Found
+        </Typography>
 
-                <DataGrid
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          mt={1}
+        >
+          Calculate an ATS score to generate reports.
+        </Typography>
 
-                    rows={rows}
-
-                    columns={columns}
-
-                    pageSizeOptions={[5, 10, 20]}
-
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 5,
-                            },
-                        },
-                    }}
-
-                    sx={{
-
-                        borderRadius: 3,
-
-                        border: "1px solid #E2E8F0",
-
-                        "& .MuiDataGrid-columnHeaders": {
-
-                            backgroundColor: "#F8FAFC",
-
-                            fontWeight: "bold",
-
-                        },
-
-                        "& .MuiDataGrid-row:hover": {
-
-                            backgroundColor: "#F8FAFC",
-
-                        },
-
-                    }}
-
-                />
-
-            </Box>
-
-            <Dialog
-                open={open}
-                onClose={() => setOpen(false)}
-            >
-
-                <DialogTitle>
-
-                    Delete ATS Report
-
-                </DialogTitle>
-
-                <DialogContent>
-
-                    <DialogContentText>
-
-                        Are you sure you want to delete this ATS report?
-
-                    </DialogContentText>
-
-                </DialogContent>
-
-                <DialogActions>
-
-                    <Button
-                        onClick={() => setOpen(false)}
-                    >
-                        Cancel
-                    </Button>
-
-                    <Button
-                        color="error"
-                        variant="contained"
-                        size="small"
-                        startIcon={<DeleteIcon />}
-                        sx={{
-                            minWidth: 90,
-                            borderRadius: 2,
-                        }}
-                    >
-                        Delete
-                    </Button>
-
-                </DialogActions>
-
-            </Dialog>
-
-        </>
+      </Box>
 
     );
+
+  }
+
+  return (
+
+    <>
+
+      <Box
+        sx={{
+          height: 550,
+          width: "100%",
+        }}
+      >
+
+        <DataGrid
+
+          rows={rows}
+
+          columns={columns}
+
+          pageSizeOptions={[5, 10, 20]}
+
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+          }}
+
+          disableRowSelectionOnClick
+
+          sx={{
+
+            borderRadius: 4,
+
+            border: "1px solid #E2E8F0",
+
+            bgcolor: "#fff",
+
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "#F8FAFC",
+              fontWeight: 700,
+              borderBottom: "2px solid #E2E8F0",
+            },
+
+            "& .MuiDataGrid-cell": {
+              borderBottom: "1px solid #F1F5F9",
+              display: "flex",
+              alignItems: "center",
+            },
+
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "#F8FAFC",
+            },
+
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: "1px solid #E2E8F0",
+            },
+
+          }}
+
+        />
+
+      </Box>
+
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+
+        <DialogTitle>
+          Delete ATS Report
+        </DialogTitle>
+
+        <DialogContent>
+
+          <DialogContentText>
+
+            Are you sure you want to delete this ATS report?
+
+            <br />
+
+            This action cannot be undone.
+
+          </DialogContentText>
+
+        </DialogContent>
+
+        <DialogActions>
+
+          <Button
+            onClick={() => setOpen(false)}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            color="error"
+            variant="contained"
+            startIcon={<DeleteIcon />}
+            onClick={handleDelete}
+            sx={{
+              borderRadius: 2,
+            }}
+          >
+            Delete
+          </Button>
+
+        </DialogActions>
+
+      </Dialog>
+
+    </>
+
+  );
 
 }

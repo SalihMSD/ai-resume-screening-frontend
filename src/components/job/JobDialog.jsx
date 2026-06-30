@@ -1,128 +1,194 @@
+import { useState } from "react";
+
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Button,
-  TextField,
+  Grid,
   Stack,
+  TextField,
+  Typography,
 } from "@mui/material";
 
-import { useState } from "react";
+export default function JobDialog({
+  open,
+  onClose,
+  onSave,
+}) {
 
-export default function JobDialog({ open, onClose, onSave }) {
-
-  const [job, setJob] = useState({
+  const initialState = {
     jobTitle: "",
     companyName: "",
     location: "",
     experience: "",
     salary: "",
-    description: "",
     requiredSkills: "",
-  });
+    description: "",
+  };
 
-  const handleChange = (e) => {
+  const [job, setJob] = useState(initialState);
+
+  function handleChange(e) {
+
     setJob({
       ...job,
       [e.target.name]: e.target.value,
     });
-  };
 
-  const handleSave = () => {
+  }
+
+  function handleSave() {
 
     onSave({
       ...job,
       requiredSkills: job.requiredSkills
         .split(",")
-        .map((s) => s.trim()),
+        .map((skill) => skill.trim())
+        .filter(Boolean),
     });
 
-    onClose();
+    setJob(initialState);
 
-    setJob({
-      jobTitle: "",
-      companyName: "",
-      location: "",
-      experience: "",
-      salary: "",
-      description: "",
-      requiredSkills: "",
-    });
-
-  };
+  }
 
   return (
+
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="sm"
       fullWidth
+      maxWidth="md"
     >
-      <DialogTitle>Add Job</DialogTitle>
 
-      <DialogContent>
+      <DialogTitle>
 
-        <Stack spacing={2} mt={1}>
+        <Typography
+          variant="h5"
+          fontWeight={700}
+        >
+          Add New Job
+        </Typography>
 
-          <TextField
-            label="Job Title"
-            name="jobTitle"
-            value={job.jobTitle}
-            onChange={handleChange}
-          />
+        <Typography
+          variant="body2"
+          color="text.secondary"
+        >
+          Fill in the job details below.
+        </Typography>
 
-          <TextField
-            label="Company"
-            name="companyName"
-            value={job.companyName}
-            onChange={handleChange}
-          />
+      </DialogTitle>
 
-          <TextField
-            label="Location"
-            name="location"
-            value={job.location}
-            onChange={handleChange}
-          />
+      <DialogContent dividers>
 
-          <TextField
-            label="Experience"
-            name="experience"
-            value={job.experience}
-            onChange={handleChange}
-          />
+        <Grid
+          container
+          spacing={2}
+          mt={1}
+        >
 
-          <TextField
-            label="Salary"
-            name="salary"
-            value={job.salary}
-            onChange={handleChange}
-          />
+          <Grid size={{ xs: 12, md: 6 }}>
 
-          <TextField
-            label="Required Skills (comma separated)"
-            name="requiredSkills"
-            value={job.requiredSkills}
-            onChange={handleChange}
-          />
+            <TextField
+              fullWidth
+              label="Job Title"
+              name="jobTitle"
+              value={job.jobTitle}
+              onChange={handleChange}
+            />
 
-          <TextField
-            label="Description"
-            multiline
-            rows={4}
-            name="description"
-            value={job.description}
-            onChange={handleChange}
-          />
+          </Grid>
 
-        </Stack>
+          <Grid size={{ xs: 12, md: 6 }}>
+
+            <TextField
+              fullWidth
+              label="Company Name"
+              name="companyName"
+              value={job.companyName}
+              onChange={handleChange}
+            />
+
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 6 }}>
+
+            <TextField
+              fullWidth
+              label="Location"
+              name="location"
+              value={job.location}
+              onChange={handleChange}
+            />
+
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 6 }}>
+
+            <TextField
+              fullWidth
+              label="Experience"
+              name="experience"
+              value={job.experience}
+              onChange={handleChange}
+            />
+
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 6 }}>
+
+            <TextField
+              fullWidth
+              label="Salary"
+              name="salary"
+              value={job.salary}
+              onChange={handleChange}
+            />
+
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 6 }}>
+
+            <TextField
+              fullWidth
+              label="Required Skills"
+              helperText="Separate skills with commas"
+              name="requiredSkills"
+              value={job.requiredSkills}
+              onChange={handleChange}
+            />
+
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+
+            <TextField
+              fullWidth
+              multiline
+              rows={5}
+              label="Job Description"
+              name="description"
+              value={job.description}
+              onChange={handleChange}
+            />
+
+          </Grid>
+
+        </Grid>
 
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions
+        sx={{
+          p: 2,
+        }}
+      >
 
-        <Button onClick={onClose}>
+        <Button
+          onClick={onClose}
+          color="inherit"
+        >
           Cancel
         </Button>
 
@@ -130,11 +196,13 @@ export default function JobDialog({ open, onClose, onSave }) {
           variant="contained"
           onClick={handleSave}
         >
-          Save
+          Save Job
         </Button>
 
       </DialogActions>
 
     </Dialog>
+
   );
+
 }

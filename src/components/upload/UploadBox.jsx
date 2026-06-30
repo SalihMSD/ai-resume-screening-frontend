@@ -1,13 +1,11 @@
+import { CloudUpload, Description } from "@mui/icons-material";
 import {
   Box,
   Button,
-  Typography,
   Paper,
   Stack,
+  Typography,
 } from "@mui/material";
-
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import DescriptionIcon from "@mui/icons-material/Description";
 
 export default function UploadBox({
   file,
@@ -15,147 +13,172 @@ export default function UploadBox({
   onUpload,
 }) {
 
-  const handleChange = (e) => {
+  function handleDrop(e) {
+    e.preventDefault();
 
-    if (e.target.files.length > 0) {
-
-      setFile(e.target.files[0]);
-
+    if (e.dataTransfer.files.length > 0) {
+      setFile(e.dataTransfer.files[0]);
     }
+  }
 
-  };
+  function handleBrowse(e) {
+    if (e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+    }
+  }
 
   return (
 
-    <Paper
-      elevation={0}
+    <Box
       sx={{
-        maxWidth: 900,
-        mx: "auto",
-        p: 6,
-        borderRadius: 5,
-        border: "2px dashed #2563EB",
-        bgcolor: "#fff",
-        textAlign: "center",
-        transition: ".3s",
-
-        "&:hover": {
-          boxShadow: "0 12px 25px rgba(0,0,0,.08)",
-        },
+        display: "flex",
+        justifyContent: "center",
+        mt: 5,
       }}
     >
 
-      <CloudUploadIcon
+      <Paper
+        elevation={3}
         sx={{
-          fontSize: 90,
-          color: "#2563EB",
+          width: {
+            xs: "100%",
+            md: "70%",
+          },
+          borderRadius: 5,
+          p: 4,
+          bgcolor: "#fff",
         }}
-      />
-
-      <Typography
-        variant="h4"
-        fontWeight="bold"
-        mt={2}
-      >
-        Upload Resume
-      </Typography>
-
-      <Typography
-        color="text.secondary"
-        mt={1}
-        mb={4}
-      >
-        Drag & Drop your PDF resume or browse from your computer.
-      </Typography>
-
-      <Button
-        variant="outlined"
-        component="label"
-        size="large"
-        sx={{
-          minWidth: 200,
-          borderRadius: 3,
-        }}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={handleDrop}
       >
 
-        Browse PDF
-
-        <input
-          hidden
-          type="file"
-          accept=".pdf"
-          onChange={handleChange}
-        />
-
-      </Button>
-
-      {file && (
-
-        <Paper
-          elevation={0}
+        <Box
           sx={{
-            mt: 4,
-            p: 2,
-            borderRadius: 3,
-            bgcolor: "#F8FAFC",
-            border: "1px solid #E2E8F0",
+            border: "2px dashed #CBD5E1",
+            borderRadius: 4,
+            minHeight: 420,
+
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
 
           <Stack
-            direction="row"
-            spacing={2}
+            spacing={3}
             alignItems="center"
+            textAlign="center"
           >
 
-            <DescriptionIcon
+            <Box
               sx={{
-                fontSize: 40,
-                color: "#2563EB",
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
               }}
-            />
+            >
+              <CloudUpload
+                sx={{
+                  fontSize: 85,
+                  color: "#2563EB",
+                }}
+              />
+            </Box>
 
-            <Box textAlign="left">
+            <Typography
+              variant="h4"
+              fontWeight="bold"
+            >
+              Drag & Drop Resume
+            </Typography>
 
-              <Typography fontWeight="bold">
+            <Typography
+              color="text.secondary"
+            >
+              Upload PDF or DOCX files for AI Resume Screening
+            </Typography>
 
-                {file.name}
+            <Stack
+              direction="row"
+              spacing={2}
+              justifyContent="center"
+            >
 
-              </Typography>
+              <Button
+                component="label"
+                variant="contained"
+                size="large"
+                sx={{
+                  width: 180,
+                  borderRadius: 3,
+                }}
+              >
+                Browse File
 
-              <Typography
-                variant="body2"
-                color="text.secondary"
+                <input
+                  hidden
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleBrowse}
+                />
+
+              </Button>
+
+              <Button
+                variant="contained"
+                color="success"
+                size="large"
+                disabled={!file}
+                onClick={onUpload}
+                sx={{
+                  width: 180,
+                  borderRadius: 3,
+                }}
+              >
+                Upload Resume
+              </Button>
+
+            </Stack>
+
+            {file && (
+
+              <Paper
+                elevation={0}
+                sx={{
+                  px: 3,
+                  py: 2,
+                  bgcolor: "#F8FAFC",
+                  border: "1px solid #E2E8F0",
+                  borderRadius: 3,
+                }}
               >
 
-                {(file.size / 1024).toFixed(2)} KB
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  alignItems="center"
+                  justifyContent="center"
+                >
 
-              </Typography>
+                  <Description color="primary" />
 
-            </Box>
+                  <Typography fontWeight={600}>
+                    {file.name}
+                  </Typography>
+
+                </Stack>
+
+              </Paper>
+
+            )}
 
           </Stack>
 
-          <Button
-            variant="contained"
-            size="large"
-            sx={{
-              mt: 3,
-              width: "100%",
-              borderRadius: 3,
-            }}
-            onClick={onUpload}
-          >
+        </Box>
 
-            Upload Resume
+      </Paper>
 
-          </Button>
-
-        </Paper>
-
-      )}
-
-    </Paper>
+    </Box>
 
   );
 

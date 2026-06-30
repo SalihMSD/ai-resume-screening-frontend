@@ -1,14 +1,13 @@
 import { useState } from "react";
 
-import Layout from "../components/common/Layout";
 import UploadBox from "../components/upload/UploadBox";
 
 import {
-  Typography,
-  Snackbar,
   Alert,
-  CircularProgress,
   Box,
+  CircularProgress,
+  Snackbar,
+  Typography,
 } from "@mui/material";
 
 import { uploadResume } from "../services/resumeService";
@@ -63,24 +62,59 @@ export default function UploadResume() {
 
   return (
 
-    <Layout>
+    <>
 
-      <Typography
-        variant="h4"
-        fontWeight="bold"
-        mb={4}
-      >
-        Upload Resume
-      </Typography>
+      {/* Header */}
+
+      <Box mb={4}>
+
+        <Typography
+          variant="h4"
+          fontWeight={700}
+        >
+          Upload Resume
+        </Typography>
+
+        <Typography
+          color="text.secondary"
+          mt={1}
+        >
+          Upload candidate resumes for AI-powered screening and analysis.
+        </Typography>
+
+      </Box>
+
+      {/* Upload Area */}
 
       {loading ? (
 
         <Box
-          display="flex"
-          justifyContent="center"
-          mt={10}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            mt: 10,
+          }}
         >
+
           <CircularProgress size={70} />
+
+          <Typography
+            mt={3}
+            variant="h6"
+            fontWeight={600}
+          >
+            Uploading Resume...
+          </Typography>
+
+          <Typography
+            color="text.secondary"
+            mt={1}
+          >
+            Please wait while we process your file.
+          </Typography>
+
         </Box>
 
       ) : (
@@ -92,6 +126,8 @@ export default function UploadResume() {
         />
 
       )}
+
+      {/* Snackbar */}
 
       <Snackbar
         open={snackbar.open}
@@ -113,7 +149,7 @@ export default function UploadResume() {
 
       </Snackbar>
 
-    </Layout>
+    </>
 
   );
 

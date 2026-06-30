@@ -1,30 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import Layout from "../components/common/Layout";
 import CandidateTable from "../components/candidate/CandidateTable";
 import CandidateDialog from "../components/candidate/CandidateDialog";
 
 import {
-  Typography,
-  Stack,
+  Alert,
+  Box,
   Button,
   Snackbar,
-  Alert,
+  TextField,
+  Typography,
 } from "@mui/material";
 
 import {
-  Visibility,
   Delete,
+  Refresh,
+  Search,
+  Visibility,
 } from "@mui/icons-material";
 
 import {
-  getCandidates,
   deleteCandidate,
+  getCandidates,
 } from "../services/candidateService";
 
 export default function Candidates() {
 
   const [rows, setRows] = useState([]);
+  const [search, setSearch] = useState("");
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -54,7 +57,7 @@ export default function Candidates() {
 
   async function handleDelete(id) {
 
-    if (!window.confirm("Delete this Candidate?")) return;
+    if (!window.confirm("Delete this candidate?")) return;
 
     try {
 
@@ -80,11 +83,31 @@ export default function Candidates() {
 
   }
 
+  const filteredRows = useMemo(() => {
+
+    return rows.filter((candidate) => {
+
+      const keyword = search.toLowerCase();
+
+      return (
+
+        candidate.fullName?.toLowerCase().includes(keyword) ||
+
+        candidate.email?.toLowerCase().includes(keyword) ||
+
+        candidate.phone?.includes(keyword)
+
+      );
+
+    });
+
+  }, [rows, search]);
+
   const columns = [
 
     {
       field: "fullName",
-      headerName: "Name",
+      headerName: "Candidate",
       flex: 1.2,
     },
 
@@ -105,8 +128,14 @@ export default function Candidates() {
       headerName: "Skills",
       flex: 2,
 
-      renderCell: (params) =>
-        params.row.skills?.join(", "),
+      renderCell: (params) => (
+        <Typography
+          variant="body2"
+          noWrap
+        >
+          {params.row.skills?.join(", ")}
+        </Typography>
+      ),
     },
 
     {
@@ -118,15 +147,16 @@ export default function Candidates() {
 
       renderCell: (params) => (
 
-        <Stack
-          direction="row"
-          spacing={1}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+          }}
         >
 
           <Button
-            variant="contained"
-            color="primary"
             size="small"
+            variant="contained"
             startIcon={<Visibility />}
             onClick={() => handleView(params.row)}
           >
@@ -134,16 +164,16 @@ export default function Candidates() {
           </Button>
 
           <Button
+            size="small"
             variant="contained"
             color="error"
-            size="small"
             startIcon={<Delete />}
             onClick={() => handleDelete(params.row.id)}
           >
             Delete
           </Button>
 
-        </Stack>
+        </Box>
 
       ),
 
@@ -153,25 +183,100 @@ export default function Candidates() {
 
   return (
 
-    <Layout>
+    <>
 
-      <Typography
-        variant="h4"
-        mb={3}
+      {/* Header */}
+
+      <Box mb={3}>
+
+        <Typography
+          variant="h4"
+          fontWeight={700}
+        >
+          Candidates
+        </Typography>
+
+        <Typography
+          color="text.secondary"
+          mt={1}
+        >
+          Manage all uploaded resumes.
+        </Typography>
+
+      </Box>
+
+      {/* Search & Refresh */}
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+          gap: 2,
+          flexWrap: "wrap",
+        }}
       >
-        Candidates
-      </Typography>
+
+        <TextField
+          placeholder="Search candidates..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          size="small"
+          sx={{
+            width: {
+              xs: "100%",
+              sm: 320,
+              md: 420,
+            },
+
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 3,
+            },
+          }}
+          InputProps={{
+            startAdornment: (
+              <Search
+                sx={{
+                  mr: 1,
+                  color: "text.secondary",
+                }}
+              />
+            ),
+          }}
+        />
+
+        <Button
+          variant="outlined"
+          startIcon={<Refresh />}
+          onClick={loadCandidates}
+          sx={{
+            minWidth: 120,
+            height: 40,
+            borderRadius: 3,
+          }}
+        >
+          Refresh
+        </Button>
+
+      </Box>
+
+      {/* Table */}
 
       <CandidateTable
-        rows={rows}
+        rows={filteredRows}
         columns={columns}
       />
+
+      {/* View Dialog */}
 
       <CandidateDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         candidate={selectedCandidate}
       />
+
+      {/* Snackbar */}
 
       <Snackbar
         open={openSnackbar}
@@ -180,14 +285,12 @@ export default function Candidates() {
       >
 
         <Alert severity="success">
-
-          Candidate Deleted Successfully
-
+          Candidate deleted successfully.
         </Alert>
 
       </Snackbar>
 
-    </Layout>
+    </>
 
   );
 

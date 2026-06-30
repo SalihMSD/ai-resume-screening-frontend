@@ -1,24 +1,26 @@
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
+  Avatar,
+  Box,
   Button,
-  Typography,
   Chip,
-  Stack,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   Grid,
-  Avatar,
+  Paper,
+  Stack,
+  Typography,
 } from "@mui/material";
 
 import {
-  Person,
   Email,
+  Folder,
+  Person,
   Phone,
   School,
   Work,
-  Folder,
 } from "@mui/icons-material";
 
 export default function CandidateDialog({
@@ -30,133 +32,159 @@ export default function CandidateDialog({
   if (!candidate) return null;
 
   return (
+
     <Dialog
       open={open}
       onClose={onClose}
       maxWidth="md"
       fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: 4,
+        },
+      }}
     >
 
       <DialogTitle>
 
-        Candidate Details
+        Candidate Profile
 
       </DialogTitle>
 
       <DialogContent dividers>
 
-        <Stack spacing={3}>
+        {/* Header */}
 
-          <Stack
-            direction="row"
-            spacing={2}
-            alignItems="center"
+        <Stack
+          direction={{
+            xs: "column",
+            sm: "row",
+          }}
+          spacing={3}
+          alignItems="center"
+          mb={4}
+        >
+
+          <Avatar
+            sx={{
+              width: 90,
+              height: 90,
+              bgcolor: "#2563EB",
+              fontSize: 36,
+            }}
           >
+            {candidate.fullName?.charAt(0)}
+          </Avatar>
 
-            <Avatar
+          <Box>
+
+            <Typography
+              variant="h4"
+              fontWeight={700}
+            >
+              {candidate.fullName}
+            </Typography>
+
+            <Typography
+              color="text.secondary"
+            >
+              Resume Candidate
+            </Typography>
+
+          </Box>
+
+        </Stack>
+
+        <Divider sx={{ mb: 4 }} />
+
+        {/* Contact */}
+
+        <Grid container spacing={3}>
+
+          <Grid size={{ xs: 12, md: 6 }}>
+
+            <Paper
+              variant="outlined"
               sx={{
-                width: 70,
-                height: 70,
-                bgcolor: "primary.main",
+                p: 2,
+                borderRadius: 3,
               }}
             >
-              <Person fontSize="large" />
-            </Avatar>
-
-            <div>
-
-              <Typography variant="h5" fontWeight="bold">
-
-                {candidate.fullName}
-
-              </Typography>
-
-              <Typography color="text.secondary">
-
-                Candidate Profile
-
-              </Typography>
-
-            </div>
-
-          </Stack>
-
-          <Divider />
-
-          <Grid container spacing={3}>
-
-            <Grid size={{ xs: 12, md: 6 }}>
 
               <Stack spacing={2}>
 
-                <Stack direction="row" spacing={1}>
+                <Typography
+                  fontWeight={700}
+                >
+                  Contact Information
+                </Typography>
 
+                <Stack direction="row" spacing={2}>
                   <Email color="primary" />
-
-                  <Typography>
-
-                    {candidate.email}
-
-                  </Typography>
-
+                  <Typography>{candidate.email}</Typography>
                 </Stack>
 
-                <Stack direction="row" spacing={1}>
-
+                <Stack direction="row" spacing={2}>
                   <Phone color="primary" />
-
-                  <Typography>
-
-                    {candidate.phone}
-
-                  </Typography>
-
+                  <Typography>{candidate.phone}</Typography>
                 </Stack>
 
               </Stack>
 
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }}>
-
-              <Stack spacing={2}>
-
-                <Stack direction="row" spacing={1}>
-
-                  <School color="primary" />
-
-                  <Typography>
-
-                    {candidate.education || "Not Available"}
-
-                  </Typography>
-
-                </Stack>
-
-                <Stack direction="row" spacing={1}>
-
-                  <Work color="primary" />
-
-                  <Typography>
-
-                    {candidate.experience || "Not Available"}
-
-                  </Typography>
-
-                </Stack>
-
-              </Stack>
-
-            </Grid>
+            </Paper>
 
           </Grid>
 
-          <Divider />
+          <Grid size={{ xs: 12, md: 6 }}>
 
-          <Typography variant="h6">
+            <Paper
+              variant="outlined"
+              sx={{
+                p: 2,
+                borderRadius: 3,
+              }}
+            >
 
+              <Stack spacing={2}>
+
+                <Typography
+                  fontWeight={700}
+                >
+                  Career
+                </Typography>
+
+                <Stack direction="row" spacing={2}>
+                  <School color="primary" />
+                  <Typography>
+                    {candidate.education || "Not Available"}
+                  </Typography>
+                </Stack>
+
+                <Stack direction="row" spacing={2}>
+                  <Work color="primary" />
+                  <Typography>
+                    {candidate.experience || "Fresher"}
+                  </Typography>
+                </Stack>
+
+              </Stack>
+
+            </Paper>
+
+          </Grid>
+
+        </Grid>
+
+        {/* Skills */}
+
+        <Box mt={5}>
+
+          <Typography
+            variant="h6"
+            fontWeight={700}
+            mb={2}
+          >
             Skills
-
           </Typography>
 
           <Stack
@@ -166,57 +194,78 @@ export default function CandidateDialog({
             useFlexGap
           >
 
-            {candidate.skills?.map((skill, index) => (
+            {(candidate.skills || []).map((skill) => (
 
               <Chip
-
-                key={index}
-
+                key={skill}
                 label={skill}
-
                 color="primary"
-
                 variant="outlined"
-
               />
 
             ))}
 
           </Stack>
 
-          <Divider />
+        </Box>
 
-          <Typography variant="h6">
+        {/* Projects */}
 
+        <Box mt={5}>
+
+          <Typography
+            variant="h6"
+            fontWeight={700}
+            mb={2}
+          >
             Projects
-
           </Typography>
 
-          <Stack spacing={1}>
+          <Stack spacing={2}>
 
-            {candidate.projects?.map((project, index) => (
+            {(candidate.projects || []).length === 0 ? (
 
-              <Stack
-                key={index}
-                direction="row"
-                spacing={1}
-              >
+              <Typography color="text.secondary">
+                No Projects Available
+              </Typography>
 
-                <Folder color="primary" />
+            ) : (
 
-                <Typography>
+              candidate.projects.map((project, index) => (
 
-                  {project}
+                <Paper
+                  key={index}
+                  variant="outlined"
+                  sx={{
+                    p: 2,
+                    borderRadius: 3,
+                  }}
+                >
 
-                </Typography>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                  >
 
-              </Stack>
+                    <Folder color="primary" />
 
-            ))}
+                    <Typography>
+
+                      {project}
+
+                    </Typography>
+
+                  </Stack>
+
+                </Paper>
+
+              ))
+
+            )}
 
           </Stack>
 
-        </Stack>
+        </Box>
 
       </DialogContent>
 
@@ -226,13 +275,13 @@ export default function CandidateDialog({
           variant="contained"
           onClick={onClose}
         >
-
           Close
-
         </Button>
 
       </DialogActions>
 
     </Dialog>
+
   );
+
 }

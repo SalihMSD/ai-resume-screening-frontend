@@ -1,36 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import Layout from "../components/common/Layout";
 import JobTable from "../components/job/JobTable";
 import JobDialog from "../components/job/JobDialog";
 import JobDetailsDialog from "../components/job/JobDetailsDialog";
 
 import {
-  Typography,
-  Button,
-  Stack,
-  Snackbar,
   Alert,
+  Box,
+  Button,
+  Snackbar,
+  TextField,
+  Typography,
 } from "@mui/material";
 
 import {
   Add,
   Delete,
+  Refresh,
+  Search,
   Visibility,
 } from "@mui/icons-material";
 
 import {
-  getJobs,
   createJob,
   deleteJob,
+  getJobs,
 } from "../services/jobService";
 
 export default function Jobs() {
 
   const [rows, setRows] = useState([]);
+  const [search, setSearch] = useState("");
 
   const [openDialog, setOpenDialog] = useState(false);
-
   const [openDetails, setOpenDetails] = useState(false);
 
   const [selectedJob, setSelectedJob] = useState(null);
@@ -69,22 +71,20 @@ export default function Jobs() {
 
       loadJobs();
 
+      setOpenDialog(false);
+
       setSnackbar({
         open: true,
         severity: "success",
-        message: "Job added successfully.",
+        message: "Job Added Successfully",
       });
 
-      setOpenDialog(false);
-
-    } catch (error) {
-
-      console.log(error);
+    } catch {
 
       setSnackbar({
         open: true,
         severity: "error",
-        message: "Failed to add job.",
+        message: "Unable to Add Job",
       });
 
     }
@@ -93,7 +93,7 @@ export default function Jobs() {
 
   async function handleDelete(id) {
 
-    if (!window.confirm("Delete this job?")) return;
+    if (!window.confirm("Delete this Job?")) return;
 
     try {
 
@@ -104,17 +104,15 @@ export default function Jobs() {
       setSnackbar({
         open: true,
         severity: "success",
-        message: "Job deleted successfully.",
+        message: "Job Deleted Successfully",
       });
 
-    } catch (error) {
-
-      console.log(error);
+    } catch {
 
       setSnackbar({
         open: true,
         severity: "error",
-        message: "Failed to delete job.",
+        message: "Delete Failed",
       });
 
     }
@@ -129,6 +127,26 @@ export default function Jobs() {
 
   }
 
+  const filteredRows = useMemo(() => {
+
+    return rows.filter((job) => {
+
+      const keyword = search.toLowerCase();
+
+      return (
+
+        job.jobTitle?.toLowerCase().includes(keyword) ||
+
+        job.companyName?.toLowerCase().includes(keyword) ||
+
+        job.location?.toLowerCase().includes(keyword)
+
+      );
+
+    });
+
+  }, [rows, search]);
+
   const columns = [
 
     {
@@ -140,7 +158,7 @@ export default function Jobs() {
     {
       field: "companyName",
       headerName: "Company",
-      flex: 1.2,
+      flex: 1.3,
     },
 
     {
@@ -152,13 +170,13 @@ export default function Jobs() {
     {
       field: "experience",
       headerName: "Experience",
-      flex: 1,
+      flex: 0.9,
     },
 
     {
       field: "salary",
       headerName: "Salary",
-      flex: 1,
+      flex: 0.9,
     },
 
     {
@@ -166,29 +184,37 @@ export default function Jobs() {
       headerName: "Skills",
       flex: 2,
 
-      renderCell: (params) =>
-        params.row.requiredSkills?.join(", "),
+      renderCell: (params) => (
+
+        <Typography
+          variant="body2"
+          noWrap
+        >
+          {params.row.requiredSkills?.join(", ")}
+        </Typography>
+
+      ),
 
     },
 
     {
       field: "actions",
       headerName: "Actions",
-      flex: 1.8,
-
+      flex: 1.6,
       sortable: false,
 
       renderCell: (params) => (
 
-        <Stack
-          direction="row"
-          spacing={1}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+          }}
         >
 
           <Button
-            variant="contained"
-            color="primary"
             size="small"
+            variant="contained"
             startIcon={<Visibility />}
             onClick={() => handleView(params.row)}
           >
@@ -196,16 +222,16 @@ export default function Jobs() {
           </Button>
 
           <Button
+            size="small"
             variant="contained"
             color="error"
-            size="small"
             startIcon={<Delete />}
             onClick={() => handleDelete(params.row.id)}
           >
             Delete
           </Button>
 
-        </Stack>
+        </Box>
 
       ),
 
@@ -215,35 +241,120 @@ export default function Jobs() {
 
   return (
 
-    <Layout>
+    <>
 
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        mb={3}
+      {/* Header */}
+
+      <Box mb={3}>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 2,
+          }}
+        >
+
+          <Box>
+
+            <Typography
+              variant="h4"
+              fontWeight={700}
+            >
+              Jobs
+            </Typography>
+
+            <Typography
+              color="text.secondary"
+              mt={1}
+            >
+              Manage all available job postings.
+            </Typography>
+
+          </Box>
+
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => setOpenDialog(true)}
+            sx={{
+              borderRadius: 3,
+              px: 3,
+            }}
+          >
+            Add Job
+          </Button>
+
+        </Box>
+
+      </Box>
+
+      {/* Search */}
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 2,
+          mb: 3,
+          flexWrap: "wrap",
+        }}
       >
 
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-        >
-          Jobs
-        </Typography>
+        <TextField
+          placeholder="Search jobs..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          size="small"
+          sx={{
+            width: {
+              xs: "100%",
+              sm: 320,
+              md: 420,
+            },
+
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 3,
+            },
+          }}
+          InputProps={{
+            startAdornment: (
+              <Search
+                sx={{
+                  mr: 1,
+                  color: "text.secondary",
+                }}
+              />
+            ),
+          }}
+        />
 
         <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={() => setOpenDialog(true)}
+          variant="outlined"
+          startIcon={<Refresh />}
+          onClick={loadJobs}
+          sx={{
+            minWidth: 120,
+            height: 40,
+            borderRadius: 3,
+          }}
         >
-          Add Job
+          Refresh
         </Button>
 
-      </Stack>
+      </Box>
+
+      {/* Table */}
 
       <JobTable
-        rows={rows}
+        rows={filteredRows}
         columns={columns}
       />
+
+      {/* Dialog */}
 
       <JobDialog
         open={openDialog}
@@ -251,11 +362,15 @@ export default function Jobs() {
         onSave={handleSave}
       />
 
+      {/* Details */}
+
       <JobDetailsDialog
         open={openDetails}
         onClose={() => setOpenDetails(false)}
         job={selectedJob}
       />
+
+      {/* Snackbar */}
 
       <Snackbar
         open={snackbar.open}
@@ -277,8 +392,8 @@ export default function Jobs() {
 
       </Snackbar>
 
-    </Layout>
+    </>
 
   );
 
-}
+} 

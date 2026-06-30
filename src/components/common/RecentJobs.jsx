@@ -1,24 +1,25 @@
 import {
+  Avatar,
+  Box,
   Card,
   CardContent,
-  Typography,
+  Chip,
+  Divider,
   List,
   ListItem,
-  Avatar,
   Stack,
-  Divider,
-  Box,
+  Typography,
 } from "@mui/material";
 
 import {
+  ArrowForward,
   Business,
   Work,
+  LocationOn,
 } from "@mui/icons-material";
 
 export default function RecentJobs({ jobs }) {
-
   return (
-
     <Card
       elevation={0}
       sx={{
@@ -27,40 +28,46 @@ export default function RecentJobs({ jobs }) {
         height: "100%",
       }}
     >
-
       <CardContent>
 
-        <Typography
-          variant="h5"
-          fontWeight="bold"
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
           mb={3}
         >
-          Recent Jobs
-        </Typography>
+          <Typography
+            variant="h5"
+            fontWeight={700}
+          >
+            Recent Jobs
+          </Typography>
 
-        <List>
+          {/* <Chip
+            label={`${jobs.length} Recent`}
+            color="success"
+            size="small"
+          /> */}
+        </Stack>
 
-          {jobs.length === 0 ? (
+        {jobs.length === 0 ? (
 
-            <Typography color="text.secondary">
-              No Jobs Available
-            </Typography>
+          <Typography color="text.secondary">
+            No Jobs Found
+          </Typography>
 
-          ) : (
+        ) : (
 
-            jobs.map((job, index) => (
+          <List disablePadding>
+
+            {jobs.map((job, index) => (
 
               <Box key={job.id}>
 
                 <ListItem
                   sx={{
-                    borderRadius: 3,
-
-                    transition: ".3s",
-
-                    "&:hover": {
-                      bgcolor: "#F8FAFC",
-                    },
+                    px: 0,
+                    py: 2,
                   }}
                 >
 
@@ -74,6 +81,8 @@ export default function RecentJobs({ jobs }) {
                     <Avatar
                       sx={{
                         bgcolor: "#16A34A",
+                        width: 48,
+                        height: 48,
                       }}
                     >
                       <Work />
@@ -82,7 +91,7 @@ export default function RecentJobs({ jobs }) {
                     <Box flex={1}>
 
                       <Typography
-                        fontWeight="bold"
+                        fontWeight={700}
                       >
                         {job.jobTitle}
                       </Typography>
@@ -91,11 +100,11 @@ export default function RecentJobs({ jobs }) {
                         direction="row"
                         spacing={1}
                         alignItems="center"
+                        mt={0.5}
                       >
-
                         <Business
                           sx={{
-                            fontSize: 18,
+                            fontSize: 16,
                             color: "#64748B",
                           }}
                         />
@@ -109,7 +118,38 @@ export default function RecentJobs({ jobs }) {
 
                       </Stack>
 
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        alignItems="center"
+                        mt={1}
+                        flexWrap="wrap"
+                        useFlexGap
+                      >
+
+                        <Chip
+                          icon={<LocationOn />}
+                          label={job.location || "Remote"}
+                          size="small"
+                          variant="outlined"
+                        />
+
+                        <Chip
+                          label={job.experience || "Fresher"}
+                          color="success"
+                          size="small"
+                          variant="outlined"
+                        />
+
+                      </Stack>
+
                     </Box>
+
+                    <ArrowForward
+                      sx={{
+                        color: "#94A3B8",
+                      }}
+                    />
 
                   </Stack>
 
@@ -121,16 +161,13 @@ export default function RecentJobs({ jobs }) {
 
               </Box>
 
-            ))
+            ))}
 
-          )}
+          </List>
 
-        </List>
+        )}
 
       </CardContent>
-
     </Card>
-
   );
-
 }

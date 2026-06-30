@@ -3,7 +3,6 @@ import {
   CardContent,
   Typography,
   Box,
-  LinearProgress,
 } from "@mui/material";
 
 export default function DashboardCard({
@@ -12,36 +11,21 @@ export default function DashboardCard({
   color,
   icon,
 }) {
-
   return (
-
     <Card
       elevation={0}
       sx={{
         borderRadius: 4,
-        height: 190,
-        position: "relative",
-        overflow: "hidden",
         border: "1px solid #E2E8F0",
-        transition: "all .3s ease",
+        transition: ".3s",
+        overflow: "hidden",
 
         "&:hover": {
           transform: "translateY(-6px)",
-          boxShadow: "0 15px 35px rgba(0,0,0,.12)",
-        },
-
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: 6,
-          bgcolor: color,
+          boxShadow: "0 15px 40px rgba(0,0,0,.10)",
         },
       }}
     >
-
       <CardContent>
 
         <Box
@@ -49,14 +33,13 @@ export default function DashboardCard({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mb: 3,
           }}
         >
 
           <Box>
 
             <Typography
-              variant="body1"
+              variant="body2"
               color="text.secondary"
             >
               {title}
@@ -64,10 +47,10 @@ export default function DashboardCard({
 
             <Typography
               variant="h3"
-              fontWeight="bold"
+              fontWeight={700}
               sx={{
-                mt: 1,
                 color,
+                mt: 1,
               }}
             >
               {value}
@@ -80,48 +63,48 @@ export default function DashboardCard({
               width: 65,
               height: 65,
               borderRadius: "50%",
-              bgcolor: `${color}20`,
-              color: color,
+              bgcolor: `${color}15`,
               display: "flex",
-              alignItems: "center",
               justifyContent: "center",
+              alignItems: "center",
+              color,
             }}
           >
-
             {icon}
-
           </Box>
 
         </Box>
 
-        <LinearProgress
-          variant="determinate"
-          value={100}
+        <Box
           sx={{
-            height: 8,
+            mt: 3,
+            height: 6,
+            bgcolor: "#EEF2FF",
             borderRadius: 5,
-            bgcolor: "#E2E8F0",
-
-            "& .MuiLinearProgress-bar": {
-              bgcolor: color,
-            },
+            overflow: "hidden",
           }}
-        />
+        >
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              bgcolor: color,
+            }}
+          />
+        </Box>
 
         <Typography
-          variant="body2"
+          variant="caption"
           color="text.secondary"
           sx={{
             mt: 2,
+            display: "block",
           }}
         >
-          Total Records
+          Updated just now
         </Typography>
 
       </CardContent>
-
     </Card>
-
   );
-
 }

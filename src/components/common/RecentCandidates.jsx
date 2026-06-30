@@ -1,21 +1,23 @@
 import {
+  Avatar,
+  Box,
   Card,
   CardContent,
-  Typography,
+  Chip,
+  Divider,
   List,
   ListItem,
-  Avatar,
   Stack,
-  Divider,
-  Box,
+  Typography,
 } from "@mui/material";
 
-import { Email } from "@mui/icons-material";
+import {
+  ArrowForward,
+  Email,
+} from "@mui/icons-material";
 
 export default function RecentCandidates({ candidates }) {
-
   return (
-
     <Card
       elevation={0}
       sx={{
@@ -24,39 +26,43 @@ export default function RecentCandidates({ candidates }) {
         height: "100%",
       }}
     >
-
       <CardContent>
 
-        <Typography
-          variant="h5"
-          fontWeight="bold"
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
           mb={3}
         >
-          Recent Candidates
-        </Typography>
+          <Typography
+            variant="h5"
+            fontWeight={700}
+          >
+            Recent Candidates
+          </Typography>
 
-        <List>
+          {/* <Chip
+            label={`${candidates.length} Recent`}
+            color="primary"
+            size="small"
+          /> */}
+        </Stack>
 
-          {candidates.length === 0 ? (
+        {candidates.length === 0 ? (
+          <Typography color="text.secondary">
+            No Candidates Found
+          </Typography>
+        ) : (
+          <List disablePadding>
 
-            <Typography color="text.secondary">
-              No Candidates Available
-            </Typography>
-
-          ) : (
-
-            candidates.map((candidate, index) => (
+            {candidates.map((candidate, index) => (
 
               <Box key={candidate.id}>
 
                 <ListItem
                   sx={{
-                    borderRadius: 3,
-                    transition: ".3s",
-
-                    "&:hover": {
-                      bgcolor: "#F8FAFC",
-                    },
+                    px: 0,
+                    py: 2,
                   }}
                 >
 
@@ -70,6 +76,8 @@ export default function RecentCandidates({ candidates }) {
                     <Avatar
                       sx={{
                         bgcolor: "#2563EB",
+                        width: 48,
+                        height: 48,
                       }}
                     >
                       {candidate.fullName?.charAt(0)}
@@ -78,7 +86,7 @@ export default function RecentCandidates({ candidates }) {
                     <Box flex={1}>
 
                       <Typography
-                        fontWeight="bold"
+                        fontWeight={700}
                       >
                         {candidate.fullName}
                       </Typography>
@@ -87,11 +95,11 @@ export default function RecentCandidates({ candidates }) {
                         direction="row"
                         spacing={1}
                         alignItems="center"
+                        mt={0.5}
                       >
-
                         <Email
                           sx={{
-                            fontSize: 18,
+                            fontSize: 16,
                             color: "#64748B",
                           }}
                         />
@@ -99,13 +107,43 @@ export default function RecentCandidates({ candidates }) {
                         <Typography
                           variant="body2"
                           color="text.secondary"
+                          noWrap
                         >
                           {candidate.email}
                         </Typography>
 
                       </Stack>
 
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        mt={1}
+                        flexWrap="wrap"
+                        useFlexGap
+                      >
+
+                        {(candidate.skills || [])
+                          .slice(0, 3)
+                          .map((skill) => (
+
+                            <Chip
+                              key={skill}
+                              label={skill}
+                              size="small"
+                              variant="outlined"
+                            />
+
+                          ))}
+
+                      </Stack>
+
                     </Box>
+
+                    <ArrowForward
+                      sx={{
+                        color: "#94A3B8",
+                      }}
+                    />
 
                   </Stack>
 
@@ -117,16 +155,12 @@ export default function RecentCandidates({ candidates }) {
 
               </Box>
 
-            ))
+            ))}
 
-          )}
-
-        </List>
+          </List>
+        )}
 
       </CardContent>
-
     </Card>
-
   );
-
 }

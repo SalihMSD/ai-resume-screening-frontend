@@ -1,19 +1,20 @@
 import {
-  Paper,
-  Stack,
   Avatar,
-  Typography,
   Box,
+  Button,
   Chip,
   CircularProgress,
   Divider,
-  Button,
+  Paper,
+  Stack,
+  Typography,
 } from "@mui/material";
 
 import {
-  Download,
-  CheckCircle,
   Cancel,
+  CheckCircle,
+  Download,
+  Work,
 } from "@mui/icons-material";
 
 import { generateATSReport } from "../../utils/pdfGenerator";
@@ -22,97 +23,137 @@ export default function ATSResultCard({ result }) {
 
   if (!result) return null;
 
+  const progressColor =
+    result.matchPercentage >= 75
+      ? "success"
+      : result.matchPercentage >= 50
+      ? "warning"
+      : "error";
+
   return (
 
     <Paper
-      elevation={3}
+      elevation={2}
       sx={{
-        mt: 4,
         p: 4,
+        mt: 4,
         borderRadius: 4,
+        border: "1px solid #E2E8F0",
       }}
     >
 
       <Stack
-        direction={{ xs: "column", md: "row" }}
-        spacing={4}
+        direction={{
+          xs: "column",
+          lg: "row",
+        }}
+        spacing={5}
       >
 
-        {/* Left */}
+        {/* LEFT PANEL */}
 
         <Box
           sx={{
             width: {
               xs: "100%",
-              md: 300,
+              lg: 300,
             },
-            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
 
           <Avatar
             sx={{
-              width: 80,
-              height: 80,
-              bgcolor: "#1976d2",
-              fontSize: 32,
-              mx: "auto",
+              width: 90,
+              height: 90,
+              bgcolor: "#2563EB",
+              fontSize: 34,
+              fontWeight: 700,
               mb: 2,
             }}
           >
-            {result.candidateName.charAt(0)}
+            {result.candidateName?.charAt(0)}
           </Avatar>
 
           <Typography
             variant="h5"
-            fontWeight="bold"
+            fontWeight={700}
+            textAlign="center"
           >
             {result.candidateName}
           </Typography>
 
-          <Typography
-            color="text.secondary"
-            mb={3}
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            mt={1}
+            mb={4}
           >
-            {result.jobTitle}
-          </Typography>
+            <Work
+              fontSize="small"
+              color="action"
+            />
+
+            <Typography color="text.secondary">
+              {result.jobTitle}
+            </Typography>
+
+          </Stack>
 
           <Box
             sx={{
               position: "relative",
-              display: "inline-flex",
+              width: 160,
+              height: 160,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
 
             <CircularProgress
               variant="determinate"
+              value={100}
+              size={160}
+              thickness={4}
+              sx={{
+                color: "#E5E7EB",
+                position: "absolute",
+              }}
+            />
+
+            <CircularProgress
+              variant="determinate"
               value={result.matchPercentage}
-              size={140}
-              thickness={5}
-              color={
-                result.matchPercentage >= 75
-                  ? "success"
-                  : result.matchPercentage >= 50
-                  ? "warning"
-                  : "error"
-              }
+              size={160}
+              thickness={4}
+              color={progressColor}
             />
 
             <Box
               sx={{
                 position: "absolute",
-                inset: 0,
                 display: "flex",
-                justifyContent: "center",
+                flexDirection: "column",
                 alignItems: "center",
               }}
             >
 
               <Typography
                 variant="h4"
-                fontWeight="bold"
+                fontWeight={700}
               >
                 {result.matchPercentage}%
+              </Typography>
+
+              <Typography
+                variant="body2"
+                color="text.secondary"
+              >
+                Match
               </Typography>
 
             </Box>
@@ -121,16 +162,11 @@ export default function ATSResultCard({ result }) {
 
           <Chip
             label={result.status}
-            color={
-              result.matchPercentage >= 75
-                ? "success"
-                : result.matchPercentage >= 50
-                ? "warning"
-                : "error"
-            }
+            color={progressColor}
             sx={{
-              mt: 3,
-              fontWeight: "bold",
+              mt: 4,
+              fontWeight: 700,
+              px: 2,
             }}
           />
 
@@ -141,125 +177,149 @@ export default function ATSResultCard({ result }) {
           flexItem
         />
 
-        {/* Right */}
+        {/* RIGHT PANEL */}
 
-        <Box
-          sx={{
-            flex: 1,
-          }}
-        >
+        <Box flex={1}>
 
           <Typography
             variant="h5"
-            fontWeight="bold"
+            fontWeight={700}
             mb={3}
           >
             Skill Analysis
           </Typography>
 
-          <Typography
-            variant="h6"
+          {/* MATCHED */}
+
+          <Paper
+            variant="outlined"
             sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              mb: 2,
+              p: 3,
+              borderRadius: 3,
+              mb: 3,
             }}
           >
 
-            <CheckCircle color="success" />
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              mb={2}
+            >
 
-            Matched Skills
+              <CheckCircle color="success" />
 
-          </Typography>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 1,
-              mb: 4,
-            }}
-          >
-
-            {result.matchedSkills.length === 0 ? (
-
-              <Typography color="text.secondary">
-
-                No matched skills
-
+              <Typography
+                variant="h6"
+                fontWeight={600}
+              >
+                Matched Skills
               </Typography>
 
-            ) : (
+            </Stack>
 
-              result.matchedSkills.map((skill) => (
+            <Stack
+              direction="row"
+              spacing={1}
+              flexWrap="wrap"
+              useFlexGap
+            >
 
-                <Chip
-                  key={skill}
-                  label={skill}
-                  color="success"
-                />
+              {result.matchedSkills?.length ? (
 
-              ))
+                result.matchedSkills.map((skill) => (
 
-            )}
+                  <Chip
+                    key={skill}
+                    label={skill}
+                    color="success"
+                    sx={{
+                      fontWeight: 600,
+                    }}
+                  />
 
-          </Box>
+                ))
 
-          <Typography
-            variant="h6"
+              ) : (
+
+                <Typography color="text.secondary">
+                  No matched skills found.
+                </Typography>
+
+              )}
+
+            </Stack>
+
+          </Paper>
+
+          {/* MISSING */}
+
+          <Paper
+            variant="outlined"
             sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              mb: 2,
+              p: 3,
+              borderRadius: 3,
             }}
           >
 
-            <Cancel color="error" />
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              mb={2}
+            >
 
-            Missing Skills
+              <Cancel color="error" />
 
-          </Typography>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 1,
-              mb: 5,
-            }}
-          >
-
-            {result.missingSkills.length === 0 ? (
-
-              <Typography color="text.secondary">
-
-                No missing skills
-
+              <Typography
+                variant="h6"
+                fontWeight={600}
+              >
+                Missing Skills
               </Typography>
 
-            ) : (
+            </Stack>
 
-              result.missingSkills.map((skill) => (
+            <Stack
+              direction="row"
+              spacing={1}
+              flexWrap="wrap"
+              useFlexGap
+            >
 
-                <Chip
-                  key={skill}
-                  label={skill}
-                  color="error"
-                  variant="outlined"
-                />
+              {result.missingSkills?.length ? (
 
-              ))
+                result.missingSkills.map((skill) => (
 
-            )}
+                  <Chip
+                    key={skill}
+                    label={skill}
+                    color="error"
+                    variant="outlined"
+                    sx={{
+                      fontWeight: 600,
+                    }}
+                  />
 
-          </Box>
+                ))
+
+              ) : (
+
+                <Typography color="text.secondary">
+                  No missing skills 🎉
+                </Typography>
+
+              )}
+
+            </Stack>
+
+          </Paper>
 
           <Box
             sx={{
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "flex-end",
+              mt: 4,
             }}
           >
 
@@ -270,12 +330,13 @@ export default function ATSResultCard({ result }) {
               onClick={() => generateATSReport(result)}
               sx={{
                 px: 5,
+                py: 1.4,
                 borderRadius: 3,
+                textTransform: "none",
+                fontWeight: 600,
               }}
             >
-
               Download ATS Report
-
             </Button>
 
           </Box>

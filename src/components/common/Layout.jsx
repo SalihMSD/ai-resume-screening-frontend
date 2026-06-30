@@ -1,8 +1,16 @@
-import { Box } from "@mui/material";
-import Sidebar from "./Sidebar";
+import { Box, Toolbar } from "@mui/material";
+import { useState } from "react";
+
 import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 
 export default function Layout({ children }) {
+
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen((prev) => !prev);
+  };
 
   return (
 
@@ -10,35 +18,43 @@ export default function Layout({ children }) {
       sx={{
         display: "flex",
         minHeight: "100vh",
-        bgcolor: "#F1F5F9",
+        bgcolor: "#F8FAFC",
       }}
     >
 
-      <Sidebar />
+      <Sidebar
+        mobileOpen={mobileOpen}
+        handleDrawerToggle={handleDrawerToggle}
+      />
 
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
+          width: {
+            xs: "100%",
+            md: "calc(100% - 260px)",
+          },
         }}
       >
 
-        <Navbar />
+        <Navbar
+          handleDrawerToggle={handleDrawerToggle}
+        />
+
+        <Toolbar />
 
         <Box
           sx={{
-            flexGrow: 1,
             p: {
               xs: 2,
+              sm: 3,
               md: 4,
             },
+            mt: 1,
           }}
         >
-
           {children}
-
         </Box>
 
       </Box>

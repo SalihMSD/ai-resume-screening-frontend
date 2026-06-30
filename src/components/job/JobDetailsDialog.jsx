@@ -1,23 +1,25 @@
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Typography,
-  Divider,
-  Stack,
-  Chip,
   Avatar,
+  Box,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Paper,
+  Stack,
+  Typography,
 } from "@mui/material";
 
 import {
-  Work,
   Business,
+  Description,
   LocationOn,
   AttachMoney,
   Psychology,
-  Description,
+  Work,
 } from "@mui/icons-material";
 
 export default function JobDetailsDialog({
@@ -33,8 +35,8 @@ export default function JobDetailsDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="md"
       fullWidth
+      maxWidth="md"
     >
 
       <DialogTitle>
@@ -45,14 +47,20 @@ export default function JobDetailsDialog({
 
       <DialogContent dividers>
 
-        <Stack spacing={3}>
+        <Paper
+          elevation={0}
+          sx={{
+            p: 3,
+            borderRadius: 3,
+            border: "1px solid #E5E7EB",
+            mb: 3,
+          }}
+        >
 
           <Stack
             direction="row"
             spacing={2}
-            sx={{
-              alignItems: "center",
-            }}
+            alignItems="center"
           >
 
             <Avatar
@@ -62,122 +70,215 @@ export default function JobDetailsDialog({
                 bgcolor: "primary.main",
               }}
             >
-
               <Work fontSize="large" />
-
             </Avatar>
 
-            <Stack>
+            <Box>
 
               <Typography
                 variant="h5"
-                fontWeight="bold"
+                fontWeight={700}
               >
                 {job.jobTitle}
               </Typography>
 
               <Typography color="text.secondary">
+
                 {job.companyName}
+
               </Typography>
 
-            </Stack>
+            </Box>
 
           </Stack>
 
-          <Divider />
+        </Paper>
 
-          <Stack spacing={2}>
+        <Stack spacing={2}>
 
-            <Stack direction="row" spacing={1}>
-
-              <Business color="primary" />
-
-              <Typography>
-
-                <strong>Company:</strong> {job.companyName}
-
-              </Typography>
-
-            </Stack>
-
-            <Stack direction="row" spacing={1}>
-
-              <LocationOn color="primary" />
-
-              <Typography>
-
-                <strong>Location:</strong> {job.location}
-
-              </Typography>
-
-            </Stack>
-
-            <Stack direction="row" spacing={1}>
-
-              <AttachMoney color="primary" />
-
-              <Typography>
-
-                <strong>Salary:</strong> {job.salary}
-
-              </Typography>
-
-            </Stack>
-
-            <Stack direction="row" spacing={1}>
-
-              <Psychology color="primary" />
-
-              <Typography>
-
-                <strong>Experience:</strong> {job.experience}
-
-              </Typography>
-
-            </Stack>
-
-          </Stack>
-
-          <Divider />
-
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-          >
-            Required Skills
-          </Typography>
-
-          <Stack
-            direction="row"
-            spacing={1}
-            useFlexGap
+          <Paper
+            variant="outlined"
             sx={{
-              flexWrap: "wrap",
+              p: 2,
+              borderRadius: 3,
             }}
           >
 
-            {(job.requiredSkills || []).map((skill) => (
+            <Stack direction="row" spacing={2}>
 
-              <Chip
-                key={skill}
-                label={skill}
-                color="primary"
-              />
+              <Business color="primary" />
 
-            ))}
+              <Box>
 
-          </Stack>
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                >
+                  Company
+                </Typography>
 
-          <Divider />
+                <Typography>
 
-          <Typography
-            variant="h6"
-            fontWeight="bold"
+                  {job.companyName}
+
+                </Typography>
+
+              </Box>
+
+            </Stack>
+
+          </Paper>
+
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 2,
+              borderRadius: 3,
+            }}
           >
-            Job Description
-          </Typography>
 
-          <Stack direction="row" spacing={1}>
+            <Stack direction="row" spacing={2}>
+
+              <LocationOn color="primary" />
+
+              <Box>
+
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                >
+                  Location
+                </Typography>
+
+                <Typography>
+
+                  {job.location}
+
+                </Typography>
+
+              </Box>
+
+            </Stack>
+
+          </Paper>
+
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 2,
+              borderRadius: 3,
+            }}
+          >
+
+            <Stack direction="row" spacing={2}>
+
+              <AttachMoney color="success" />
+
+              <Box>
+
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                >
+                  Salary
+                </Typography>
+
+                <Typography>
+
+                  {job.salary}
+
+                </Typography>
+
+              </Box>
+
+            </Stack>
+
+          </Paper>
+
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 2,
+              borderRadius: 3,
+            }}
+          >
+
+            <Stack direction="row" spacing={2}>
+
+              <Psychology color="warning" />
+
+              <Box>
+
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                >
+                  Experience
+                </Typography>
+
+                <Typography>
+
+                  {job.experience}
+
+                </Typography>
+
+              </Box>
+
+            </Stack>
+
+          </Paper>
+
+        </Stack>
+
+        <Divider sx={{ my: 3 }} />
+
+        <Typography
+          variant="h6"
+          fontWeight={700}
+          mb={2}
+        >
+          Required Skills
+        </Typography>
+
+        <Stack
+          direction="row"
+          spacing={1}
+          useFlexGap
+          flexWrap="wrap"
+        >
+
+          {(job.requiredSkills || []).map((skill) => (
+
+            <Chip
+              key={skill}
+              label={skill}
+              color="primary"
+              variant="outlined"
+            />
+
+          ))}
+
+        </Stack>
+
+        <Divider sx={{ my: 3 }} />
+
+        <Typography
+          variant="h6"
+          fontWeight={700}
+          mb={2}
+        >
+          Job Description
+        </Typography>
+
+        <Paper
+          variant="outlined"
+          sx={{
+            p: 2,
+            borderRadius: 3,
+          }}
+        >
+
+          <Stack direction="row" spacing={2}>
 
             <Description color="primary" />
 
@@ -189,7 +290,7 @@ export default function JobDetailsDialog({
 
           </Stack>
 
-        </Stack>
+        </Paper>
 
       </DialogContent>
 
@@ -199,9 +300,7 @@ export default function JobDetailsDialog({
           variant="contained"
           onClick={onClose}
         >
-
           Close
-
         </Button>
 
       </DialogActions>

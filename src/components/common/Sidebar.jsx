@@ -1,12 +1,4 @@
 import {
-  Dashboard,
-  People,
-  Work,
-  UploadFile,
-  Assessment,
-} from "@mui/icons-material";
-
-import {
   Avatar,
   Box,
   Divider,
@@ -16,15 +8,25 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Toolbar,
+  Paper,
   Typography,
 } from "@mui/material";
 
-import { Link, useLocation } from "react-router-dom";
+import {
+  Dashboard,
+  People,
+  Work,
+  UploadFile,
+  Assessment,
+} from "@mui/icons-material";
+
+import SmartToyIcon from "@mui/icons-material/SmartToy";
+
+import { NavLink } from "react-router-dom";
 
 const drawerWidth = 260;
 
-const menus = [
+const menuItems = [
   {
     text: "Dashboard",
     icon: <Dashboard />,
@@ -52,193 +54,250 @@ const menus = [
   },
 ];
 
-export default function Sidebar() {
-
-  const location = useLocation();
-
-  return (
-
-    <Drawer
-      variant="permanent"
+export default function Sidebar({
+  mobileOpen,
+  handleDrawerToggle,
+}) {
+  const drawer = (
+    <Box
       sx={{
-        width: drawerWidth,
-
-        flexShrink: 0,
-
-        "& .MuiDrawer-paper": {
-
-          width: drawerWidth,
-
-          boxSizing: "border-box",
-
-          background: "#0F172A",
-
-          color: "#fff",
-
-          borderRight: "none",
-
-        },
-
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        bgcolor: "#0F172A",
+        color: "#fff",
       }}
     >
-
-      <Toolbar>
-
-        <Box>
-
-          <Typography
-            variant="h5"
-            fontWeight="bold"
-          >
-            🤖 AI Resume
-          </Typography>
-
-          <Typography
-            variant="body2"
-            sx={{
-              color: "#94A3B8",
-            }}
-          >
-            Screening System
-          </Typography>
-
-        </Box>
-
-      </Toolbar>
-
-      <Divider
-        sx={{
-          borderColor: "#334155",
-        }}
-      />
-
-      <List
-        sx={{
-          mt: 2,
-        }}
-      >
-
-        {menus.map((menu) => (
-
-          <ListItem
-            key={menu.text}
-            disablePadding
-            sx={{
-              px: 1,
-              mb: 1,
-            }}
-          >
-
-            <ListItemButton
-
-              component={Link}
-
-              to={menu.path}
-
-              selected={location.pathname === menu.path}
-
-              sx={{
-
-                borderRadius: 3,
-
-                "&.Mui-selected": {
-
-                  bgcolor: "#2563EB",
-
-                  color: "#fff",
-
-                },
-
-                "&.Mui-selected:hover": {
-
-                  bgcolor: "#1D4ED8",
-
-                },
-
-                "&:hover": {
-
-                  bgcolor: "#1E293B",
-
-                },
-
-              }}
-
-            >
-
-              <ListItemIcon
-                sx={{
-                  color: "#fff",
-                  minWidth: 40,
-                }}
-              >
-
-                {menu.icon}
-
-              </ListItemIcon>
-
-              <ListItemText primary={menu.text} />
-
-            </ListItemButton>
-
-          </ListItem>
-
-        ))}
-
-      </List>
+      {/* ================= Logo ================= */}
 
       <Box
         sx={{
-          mt: "auto",
-          p: 3,
+          px: 3,
+          py: 4,
         }}
       >
-
-        <Divider
-          sx={{
-            borderColor: "#334155",
-            mb: 3,
-          }}
-        />
-
         <Box
+          display="flex"
+          alignItems="center"
+          gap={2}
+        >
+          <SmartToyIcon
+            sx={{
+              fontSize: 34,
+              color: "#60A5FA",
+            }}
+          />
+
+          <Box>
+            <Typography
+              fontWeight={800}
+              fontSize="2rem"
+              color="white"
+            >
+              AI Resume
+            </Typography>
+
+            <Typography
+              sx={{
+                color: "#94A3B8",
+                fontSize: 15,
+              }}
+            >
+              Recruitment System
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+
+      <Divider
+        sx={{
+          borderColor: "rgba(255,255,255,.08)",
+        }}
+      />
+
+      {/* ================= Navigation ================= */}
+
+      <Box
+        sx={{
+          flexGrow: 1,
+          px: 2,
+          py: 3,
+        }}
+      >
+        <List>
+
+          {menuItems.map((item) => (
+
+            <ListItem
+              key={item.text}
+              disablePadding
+              sx={{
+                mb: 1,
+              }}
+            >
+              <ListItemButton
+                component={NavLink}
+                to={item.path}
+                sx={{
+                  borderRadius: 4,
+                  py: 1.7,
+
+                  color: "#E2E8F0",
+
+                  "&.active": {
+                    bgcolor: "#2563EB",
+                    color: "#fff",
+                    boxShadow:
+                      "0 8px 20px rgba(37,99,235,.35)",
+                  },
+
+                  "&:hover": {
+                    bgcolor: "#1E293B",
+                  },
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    color: "inherit",
+                    minWidth: 42,
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+
+                <ListItemText
+                  primary={item.text}
+                  primaryTypographyProps={{
+                    fontWeight: 600,
+                    fontSize: 18,
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+
+          ))}
+
+        </List>
+      </Box>
+
+      {/* ================= Bottom Profile ================= */}
+
+      <Box
+        sx={{
+          p: 2,
+          borderTop:
+            "1px solid rgba(255,255,255,.08)",
+        }}
+      >
+        <Paper
+          elevation={0}
           sx={{
+            bgcolor: "rgba(255,255,255,.06)",
+            borderRadius: 4,
+            p: 2,
             display: "flex",
             alignItems: "center",
             gap: 2,
+            color: "#fff",
           }}
         >
-
           <Avatar
             sx={{
+              width: 56,
+              height: 56,
               bgcolor: "#2563EB",
+              fontWeight: 700,
+              position: "relative",
             }}
           >
-            S
+            M
           </Avatar>
 
           <Box>
-
-            <Typography fontWeight="bold">
+            <Typography
+              fontWeight={700}
+              fontSize={18}
+            >
               Muhammad Salih
             </Typography>
 
             <Typography
-              variant="body2"
               sx={{
                 color: "#94A3B8",
+                fontSize: 15,
               }}
             >
               Administrator
             </Typography>
-
           </Box>
-
-        </Box>
-
+        </Paper>
       </Box>
-
-    </Drawer>
-
+    </Box>
   );
 
+  return (
+    <Box
+      component="nav"
+      sx={{
+        width: {
+          md: drawerWidth,
+        },
+        flexShrink: {
+          md: 0,
+        },
+      }}
+    >
+      {/* Mobile */}
+
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        sx={{
+          display: {
+            xs: "block",
+            md: "none",
+          },
+
+          "& .MuiDrawer-paper": {
+            width: drawerWidth,
+            bgcolor: "#0F172A",
+            boxSizing: "border-box",
+            height: "100vh",
+          },
+        }}
+      >
+        {drawer}
+      </Drawer>
+
+      {/* Desktop */}
+
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: {
+            xs: "none",
+            md: "block",
+          },
+
+          "& .MuiDrawer-paper": {
+            width: drawerWidth,
+            boxSizing: "border-box",
+            bgcolor: "#0F172A",
+            color: "#fff",
+            height: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            borderRight: "none",
+          },
+        }}
+        open
+      >
+        {drawer}
+      </Drawer>
+    </Box>
+  );
 }

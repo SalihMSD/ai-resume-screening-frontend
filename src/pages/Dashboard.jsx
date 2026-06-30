@@ -1,21 +1,25 @@
 import { useEffect, useState } from "react";
 
-import Layout from "../components/common/Layout";
 import DashboardCard from "../components/common/DashboardCard";
 import RecentCandidates from "../components/common/RecentCandidates";
 import RecentJobs from "../components/common/RecentJobs";
 
 import {
+  Box,
+  Button,
   Grid,
+  Stack,
   Typography,
 } from "@mui/material";
 
 import {
-  People,
-  Work,
   Assessment,
+  People,
   UploadFile,
+  Work,
 } from "@mui/icons-material";
+
+import { Link } from "react-router-dom";
 
 import {
   getCandidates,
@@ -46,11 +50,8 @@ export default function Dashboard() {
       const jobResponse = await getJobs();
       const matchResponse = await getMatches();
 
-      const recentCandidateResponse =
-        await getRecentCandidates();
-
-      const recentJobResponse =
-        await getRecentJobs();
+      const recentCandidateResponse = await getRecentCandidates();
+      const recentJobResponse = await getRecentJobs();
 
       setCandidateCount(candidateResponse.data.length);
       setJobCount(jobResponse.data.length);
@@ -69,28 +70,52 @@ export default function Dashboard() {
       );
 
     } catch (error) {
-
       console.log(error);
-
     }
 
   }
 
   return (
 
-    <Layout>
+    <>
 
-      <Typography
-        variant="h4"
-        fontWeight="bold"
-        mb={4}
+      <Box
+        sx={{
+          mb: 4,
+        }}
       >
-        Dashboard
-      </Typography>
 
-      <Grid container spacing={3}>
+        <Typography
+          variant="h4"
+          fontWeight={700}
+        >
+          Dashboard
+        </Typography>
 
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          mt={1}
+        >
+          Welcome back, Muhammad 👋
+          <br />
+          Here's today's recruitment overview.
+        </Typography>
+
+      </Box>
+
+      <Grid
+        container
+        spacing={3}
+      >
+
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+            lg: 3,
+          }}
+        >
 
           <DashboardCard
             title="Candidates"
@@ -101,7 +126,13 @@ export default function Dashboard() {
 
         </Grid>
 
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+            lg: 3,
+          }}
+        >
 
           <DashboardCard
             title="Jobs"
@@ -112,7 +143,13 @@ export default function Dashboard() {
 
         </Grid>
 
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+            lg: 3,
+          }}
+        >
 
           <DashboardCard
             title="ATS Matches"
@@ -123,7 +160,13 @@ export default function Dashboard() {
 
         </Grid>
 
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+            lg: 3,
+          }}
+        >
 
           <DashboardCard
             title="Uploads"
@@ -134,7 +177,76 @@ export default function Dashboard() {
 
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={12}>
+
+          <Typography
+            variant="h5"
+            fontWeight={700}
+            mt={2}
+            mb={2}
+          >
+            Quick Actions
+          </Typography>
+
+          <Stack
+            direction={{
+              xs: "column",
+              sm: "row",
+            }}
+            spacing={2}
+            flexWrap="wrap"
+            useFlexGap
+            mb={4}
+          >
+
+            <Button
+              component={Link}
+              to="/upload"
+              variant="contained"
+              startIcon={<UploadFile />}
+            >
+              Upload Resume
+            </Button>
+
+            <Button
+              component={Link}
+              to="/jobs"
+              variant="contained"
+              color="success"
+              startIcon={<Work />}
+            >
+              Add Job
+            </Button>
+
+            <Button
+              component={Link}
+              to="/candidates"
+              variant="outlined"
+              startIcon={<People />}
+            >
+              Candidates
+            </Button>
+
+            <Button
+              component={Link}
+              to="/ats"
+              variant="outlined"
+              color="warning"
+              startIcon={<Assessment />}
+            >
+              ATS Results
+            </Button>
+
+          </Stack>
+
+        </Grid>
+
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6,
+          }}
+        >
 
           <RecentCandidates
             candidates={recentCandidates}
@@ -142,7 +254,12 @@ export default function Dashboard() {
 
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6,
+          }}
+        >
 
           <RecentJobs
             jobs={recentJobs}
@@ -152,7 +269,7 @@ export default function Dashboard() {
 
       </Grid>
 
-    </Layout>
+    </>
 
   );
 
